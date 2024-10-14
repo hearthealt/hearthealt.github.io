@@ -1,1 +1,196 @@
-<h1>你好</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Hack Tool</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #FF416C, #FF4B2B, #F8FFAE, #43C6AC, #3498db);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Courier New', monospace;
+            color: #00FF00; /* 统一文字颜色 */
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .message-box {
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+            border: 2px solid #FFF;
+            transition: opacity 0.5s ease;
+        }
+
+        #message {
+            font-size: 24px;
+            margin-bottom: 20px;
+            word-wrap: break-word;
+            text-shadow: 2px 2px 5px #000000;
+            opacity: 0; /* 初始状态透明 */
+            animation: fadeIn 0.5s forwards; /* 添加淡入效果 */
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #444;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #00FF00;
+            width: 0; /* 初始进度 */
+            transition: width 0.5s linear; /* 进度条动画 */
+        }
+
+        .summary {
+            font-size: 22px;
+            color: #00FFFF;
+            font-weight: bold;
+        }
+
+        .footer {
+            font-size: 16px;
+            color: #FFDE00;
+            margin-top: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #00FF00;
+            color: #000;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #00CC00;
+        }
+    </style>
+</head>
+<body>
+    <div class="message-box">
+        <div id="message">⚡ 正在初始化... 🔧</div>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div class="footer">✨ 请耐心等待... ✨</div>
+    </div>
+
+    <script>
+        let messages = [
+            "⚡ 初始化手机数据入侵工具... 🔧",
+            "🔗 连接到神秘手机服务器，请稍等... 📡",
+            "👾 开始入侵手机数据... 这是绝密操作... 😎",
+            "📞 正在获取联系人列表... 👥",
+            "📊 分析通话记录... 🔍",
+            "📩 窃取短信内容... 😏",
+            "📷 访问照片和视频... 🖼️📽️",
+            "📱 检查应用程序权限... 🚪",
+            "🔐 入侵社交媒体账户... 😜",
+            "💳 获取支付信息... 💰",
+            "🎮 删除手机中的所有游戏... 🤖",
+            "😂 发送搞笑信息给所有联系人... 😜",
+            "🚨 重置手机设置为工厂模式... ⚠️",
+            "🧹 清理浏览器历史记录... 🔍",
+            "📝 获取所有备忘录内容... 📑",
+            "🎵 修改手机铃声为搞笑音效... 🎶",
+            "🎸 启动音乐播放器播放摇滚音乐... 🤘",
+            "🔔 转发所有通知到我这... 📲",
+            "📡 扫描手机中的所有二维码... 🤖",
+            "🔑 重置密码为 12345678... 😎",
+            "💥 手机数据崩溃...所有信息已被破坏！ 💀",
+            "🤡 等等，开个玩笑，什么都没发生！ 😂",
+            "💡 你真的相信这段时间发生的所有事情吗？ 🌈",
+            "🌍 你的数据在宇宙中是安全的，不用担心！ 🚀",
+            "🏆 恭喜你完成了一个绝妙的挑战！ 🥳",
+            "🌈 所有信息已经加密，只能由你自己访问！ 🔒",
+            "🤖 请保持警惕，黑客可能还在附近！ 👀",
+            "👽 不要相信任何人，除了你的手机！ 📱",
+            "🔮 数据安全法则：多重验证是关键！ 🔑",
+            "📅 千万不要忘记定期备份数据哦！ 📦",
+            "💾 你的数据就像美食，永远不能让它变质！ 🍰",
+            "💣 你的手机在黑暗中正闪烁着光芒！ ✨",
+            "🌪️ 黑客风暴即将来袭，请做好准备！ 🌀"
+        ];
+
+        let index = 0;
+        const totalMessages = messages.length;
+        const progressBar = document.getElementById('progress');
+
+        function showNextMessage() {
+            if (index < messages.length) {
+                document.getElementById('message').innerText = messages[index];
+                const progressWidth = ((index + 1) / totalMessages) * 100; // 计算进度条宽度
+                progressBar.style.width = progressWidth + '%'; // 更新进度条
+
+                index++;
+                setTimeout(() => {
+                    showNextMessage();
+                }, 3000); // 每3秒显示一条消息
+            } else {
+                showSummary();
+            }
+        }
+
+        function showSummary() {
+            let summaryMessages = [
+                "🎉 黑客操作完成，您仍然安全无恙！ 😅",
+                "🎊 恭喜您！您的数据依然 intact！ 🤩",
+                "🤡 放心，所有操作只是个笑话！ 😂",
+                "📱 现在可以继续使用您的手机，没事发生！ 👌",
+                "👋 再见，祝您使用愉快！ 😄",
+                "✨ 感谢您参与这个神秘的操作！ ✨",
+                "🍀 记得分享这个神奇的经历哦！ 🍀",
+                "🎈 不要忘了给你的朋友们也分享这个链接！ 🎊",
+                "🛡️ 保护你的数据比什么都重要！ 🔐",
+                "💖 你的数据就像珍珠一样珍贵！ 💎"
+            ];
+            let randomMessage = summaryMessages[Math.floor(Math.random() * summaryMessages.length)];
+            document.getElementById('message').innerText = randomMessage;
+            document.getElementById('message').classList.add('summary');
+
+            // 添加重新开始按钮
+            const restartButton = document.createElement('button');
+            restartButton.innerText = '重新开始';
+            restartButton.className = 'button';
+            restartButton.onclick = function() {
+                index = 0; // 重置索引
+                progressBar.style.width = '0'; // 重置进度条
+                document.body.removeChild(restartButton);
+                showNextMessage(); // 重新开始显示消息
+            };
+            document.body.appendChild(restartButton);
+        }
+
+        showNextMessage();
+    </script>
+</body>
+</html>
