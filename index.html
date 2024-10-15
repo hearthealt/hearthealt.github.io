@@ -17,7 +17,7 @@
             animation: gradientBG 15s ease infinite;
             font-family: 'Courier New', monospace;
             color: #00FF00;
-            overflow: hidden; /* Prevent overflow on mobile */
+            overflow: hidden;
         }
 
         @keyframes gradientBG {
@@ -130,6 +130,7 @@
             <button class="button" onclick="startHacking()">开始入侵</button>
             <div id="error-message" class="error"></div>
         </div>
+        <button id="restart-button" class="button" style="display: none;" onclick="restart()">重新开始</button>
     </div>
 
     <script>
@@ -181,6 +182,7 @@
             }
 
             document.getElementById('password-box').style.display = 'none';
+            document.getElementById('restart-button').style.display = 'block'; // 显示重新开始按钮
             showNextMessage();
         }
 
@@ -212,24 +214,17 @@
             const timestamp = new Date().toLocaleTimeString(); // 获取当前时间
             document.getElementById('message').innerText = `${randomMessage} \n操作完成时间: ${timestamp}`;
             document.getElementById('message').classList.add('summary');
+        }
 
-            // 添加重新开始按钮
-            const restartButton = document.createElement('button');
-            restartButton.innerText = '重新开始';
-            restartButton.className = 'button';
-            restartButton.onclick = function() {
-                index = 0;
-                progressBar.style.width = '0%';
-                
-                document.getElementById('password-box').style.display = 'block';
-                document.getElementById('message').classList.remove('summary');
-                passwordInput.value = '';
-                errorMessage.innerText = '';
-                document.getElementById('message').innerText = '⚡ 正在初始化... 🔧';
-                document.body.removeChild(restartButton);
-            };
-
-            document.querySelector('.message-box').appendChild(restartButton);
+        function restart() {
+            index = 0;
+            progressBar.style.width = '0%';
+            document.getElementById('password-box').style.display = 'block';
+            document.getElementById('restart-button').style.display = 'none';
+            document.getElementById('message').classList.remove('summary');
+            document.getElementById('message').innerText = '⚡ 正在初始化... 🔧';
+            document.getElementById('password-input').value = '';
+            document.getElementById('error-message').innerText = '';
         }
 
         // 页面加载后立即展示密码框
