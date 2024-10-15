@@ -220,6 +220,7 @@
             restartButton.onclick = function() {
                 index = 0;
                 progressBar.style.width = '0%';
+                document.body.removeChild(restartButton);
                 document.getElementById('password-box').style.display = 'block';
                 document.getElementById('message').classList.remove('summary');
                 passwordInput.value = '';
