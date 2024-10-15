@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fake Hack Tool</title>
+    <title>我是你爹</title>
     <style>
         body {
             margin: 0;
@@ -16,7 +16,8 @@
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             font-family: 'Courier New', monospace;
-            color: #00FF00; /* 统一文字颜色 */
+            color: #00FF00;
+            overflow: hidden; /* Prevent overflow on mobile */
         }
 
         @keyframes gradientBG {
@@ -42,8 +43,8 @@
             margin-bottom: 20px;
             word-wrap: break-word;
             text-shadow: 2px 2px 5px #000000;
-            opacity: 0; /* 初始状态透明 */
-            animation: fadeIn 0.5s forwards; /* 添加淡入效果 */
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
         }
 
         @keyframes fadeIn {
@@ -62,8 +63,8 @@
         .progress {
             height: 100%;
             background-color: #00FF00;
-            width: 0; /* 初始进度 */
-            transition: width 0.5s linear; /* 进度条动画 */
+            width: 0;
+            transition: width 0.5s linear;
         }
 
         .summary {
@@ -93,6 +94,27 @@
         .button:hover {
             background-color: #00CC00;
         }
+
+        #password-box {
+            margin-top: 20px;
+            display: none;
+        }
+
+        #password-input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #FFF;
+            background-color: #111;
+            color: #00FF00;
+            font-size: 18px;
+            width: 80%;
+        }
+
+        .error {
+            color: #FF0000;
+            font-size: 14px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -102,6 +124,12 @@
             <div id="progress" class="progress"></div>
         </div>
         <div class="footer">✨ 请耐心等待... ✨</div>
+        <div id="password-box">
+            <p>请输入目标设备密码：</p>
+            <input type="password" id="password-input" placeholder="输入密码...">
+            <button class="button" onclick="startHacking()">开始入侵</button>
+            <div id="error-message" class="error"></div>
+        </div>
     </div>
 
     <script>
@@ -129,21 +157,32 @@
             "💥 手机数据崩溃...所有信息已被破坏！ 💀",
             "🤡 等等，开个玩笑，什么都没发生！ 😂",
             "💡 你真的相信这段时间发生的所有事情吗？ 🌈",
-            "🌍 你的数据在宇宙中是安全的，不用担心！ 🚀",
-            "🏆 恭喜你完成了一个绝妙的挑战！ 🥳",
-            "🌈 所有信息已经加密，只能由你自己访问！ 🔒",
-            "🤖 请保持警惕，黑客可能还在附近！ 👀",
-            "👽 不要相信任何人，除了你的手机！ 📱",
-            "🔮 数据安全法则：多重验证是关键！ 🔑",
-            "📅 千万不要忘记定期备份数据哦！ 📦",
-            "💾 你的数据就像美食，永远不能让它变质！ 🍰",
-            "💣 你的手机在黑暗中正闪烁着光芒！ ✨",
-            "🌪️ 黑客风暴即将来袭，请做好准备！ 🌀"
+            "🌍 你的数据在宇宙中是安全的，不用担心！ 🚀"
         ];
+
+        // 随机打乱消息顺序
+        messages = messages.sort(() => Math.random() - 0.5);
 
         let index = 0;
         const totalMessages = messages.length;
         const progressBar = document.getElementById('progress');
+
+        // 等待用户输入密码后开始入侵
+        function startHacking() {
+            const passwordInput = document.getElementById('password-input');
+            const errorMessage = document.getElementById('error-message');
+
+            // 验证密码
+            if (passwordInput.value.trim() === "") {
+                errorMessage.innerText = "密码不能为空，请输入密码！";
+                return;
+            } else {
+                errorMessage.innerText = ""; // 清除错误信息
+            }
+
+            document.getElementById('password-box').style.display = 'none';
+            showNextMessage();
+        }
 
         function showNextMessage() {
             if (index < messages.length) {
@@ -162,19 +201,16 @@
 
         function showSummary() {
             let summaryMessages = [
+                "🏆 恭喜你完成了一个绝妙的挑战！ 🥳",
                 "🎉 黑客操作完成，您仍然安全无恙！ 😅",
                 "🎊 恭喜您！您的数据依然 intact！ 🤩",
                 "🤡 放心，所有操作只是个笑话！ 😂",
                 "📱 现在可以继续使用您的手机，没事发生！ 👌",
-                "👋 再见，祝您使用愉快！ 😄",
-                "✨ 感谢您参与这个神秘的操作！ ✨",
-                "🍀 记得分享这个神奇的经历哦！ 🍀",
-                "🎈 不要忘了给你的朋友们也分享这个链接！ 🎊",
-                "🛡️ 保护你的数据比什么都重要！ 🔐",
-                "💖 你的数据就像珍珠一样珍贵！ 💎"
+                "👋 再见，祝您使用愉快！ 😄"
             ];
             let randomMessage = summaryMessages[Math.floor(Math.random() * summaryMessages.length)];
-            document.getElementById('message').innerText = randomMessage;
+            const timestamp = new Date().toLocaleTimeString(); // 获取当前时间
+            document.getElementById('message').innerText = `${randomMessage} \n操作完成时间: ${timestamp}`;
             document.getElementById('message').classList.add('summary');
 
             // 添加重新开始按钮
@@ -182,15 +218,22 @@
             restartButton.innerText = '重新开始';
             restartButton.className = 'button';
             restartButton.onclick = function() {
-                index = 0; // 重置索引
-                progressBar.style.width = '0'; // 重置进度条
-                document.body.removeChild(restartButton);
-                showNextMessage(); // 重新开始显示消息
+                index = 0;
+                progressBar.style.width = '0%';
+                document.getElementById('password-box').style.display = 'block';
+                document.getElementById('message').classList.remove('summary');
+                passwordInput.value = '';
+                errorMessage.innerText = '';
+                document.getElementById('message').innerText = '⚡ 正在初始化... 🔧';
             };
-            document.body.appendChild(restartButton);
+
+            document.querySelector('.message-box').appendChild(restartButton);
         }
 
-        showNextMessage();
+        // 页面加载后立即展示密码框
+        window.onload = function() {
+            document.getElementById('password-box').style.display = 'block';
+        };
     </script>
 </body>
 </html>
