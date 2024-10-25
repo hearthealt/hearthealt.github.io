@@ -1,236 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我是你爹</title>
+    <title>Chat with Assistant</title>
     <style>
+        * {
+            box-sizing: border-box; /* 使所有元素的宽高包含内边距和边框 */
+        }
         body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e9ecef;
             margin: 0;
-            padding: 0;
+            color: #343a40;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #FF416C, #FF4B2B, #F8FFAE, #43C6AC, #3498db);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            font-family: 'Courier New', monospace;
-            color: #00FF00;
-            overflow: hidden;
+            height: 100vh; /* 充满视口高度 */
         }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .message-box {
-            background-color: rgba(0, 0, 0, 0.8);
-            border-radius: 15px;
-            padding: 20px;
-            width: 80%;
-            max-width: 700px;
-            text-align: center;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
-            border: 2px solid #FFF;
-            transition: opacity 0.5s ease;
-        }
-
-        #message {
-            font-size: 24px;
-            margin-bottom: 20px;
-            word-wrap: break-word;
-            text-shadow: 2px 2px 5px #000000;
-            opacity: 0;
-            animation: fadeIn 0.5s forwards;
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
-        .progress-bar {
+        #chat-container {
             width: 100%;
-            height: 10px;
-            background-color: #444;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-
-        .progress {
+            max-width: 600px; /* 限制最大宽度 */
             height: 100%;
-            background-color: #00FF00;
-            width: 0;
-            transition: width 0.5s linear;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
         }
-
-        .summary {
-            font-size: 22px;
-            color: #00FFFF;
-            font-weight: bold;
+        #messages {
+            border: 1px solid #ccc;
+            flex-grow: 1; /* 使消息区充满剩余空间 */
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px 10px 0 0; /* 只给顶部圆角 */
         }
-
-        .footer {
+        #input-container {
+            display: flex;
+            padding: 10px;
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+        }
+        #user-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            margin-right: 10px;
             font-size: 16px;
-            color: #FFDE00;
-            margin-top: 20px;
+            transition: border 0.3s;
         }
-
-        .button {
+        #user-input:focus {
+            border-color: #5cb85c;
+            outline: none;
+        }
+        button {
             padding: 10px 20px;
             border: none;
-            border-radius: 5px;
-            background-color: #00FF00;
-            color: #000;
+            border-radius: 20px;
+            background-color: #5cb85c;
+            color: white;
             font-size: 16px;
             cursor: pointer;
-            margin: 10px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
         }
-
-        .button:hover {
-            background-color: #00CC00;
+        button:hover {
+            background-color: #4cae4c;
+            transform: translateY(-1px);
         }
-
-        #password-box {
-            margin-top: 20px;
-            display: none;
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
         }
-
-        #password-input {
+        .user-message {
+            text-align: left;
+            margin: 5px 0;
             padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #FFF;
-            background-color: #111;
-            color: #00FF00;
-            font-size: 18px;
-            width: 80%;
+            border-radius: 20px;
+            background-color: #d9edf7;
+            color: #31708f;
+            position: relative;
         }
-
-        .error {
-            color: #FF0000;
-            font-size: 14px;
-            margin-top: 10px;
+        .assistant-message {
+            text-align: left;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 20px;
+            background-color: #dff0d8;
+            color: #3c763d;
+            position: relative;
         }
     </style>
 </head>
 <body>
-    <div class="message-box">
-        <div id="message">⚡ 正在初始化... 🔧</div>
-        <div class="progress-bar">
-            <div id="progress" class="progress"></div>
-        </div>
-        <div class="footer">✨ 请耐心等待... ✨</div>
-        <div id="password-box">
-            <p>请输入目标设备密码：</p>
-            <input type="password" id="password-input" placeholder="输入密码...">
-            <button class="button" onclick="startHacking()">开始入侵</button>
-            <div id="error-message" class="error"></div>
-        </div>
-        <button id="restart-button" class="button" style="display: none;" onclick="restart()">重新开始</button>
+
+<div id="chat-container">
+    <div id="messages"></div>
+    <div id="input-container">
+        <input type="text" id="user-input" placeholder="输入你的消息..." />
+        <button id="send-button" onclick="sendMessage()">发送</button>
     </div>
+</div>
 
-    <script>
-        let messages = [
-            "⚡ 初始化手机数据入侵工具... 🔧",
-            "🔗 连接到神秘手机服务器，请稍等... 📡",
-            "👾 开始入侵手机数据... 这是绝密操作... 😎",
-            "📞 正在获取联系人列表... 👥",
-            "📊 分析通话记录... 🔍",
-            "📩 窃取短信内容... 😏",
-            "📷 访问照片和视频... 🖼️📽️",
-            "📱 检查应用程序权限... 🚪",
-            "🔐 入侵社交媒体账户... 😜",
-            "💳 获取支付信息... 💰",
-            "🎮 删除手机中的所有游戏... 🤖",
-            "😂 发送搞笑信息给所有联系人... 😜",
-            "🚨 重置手机设置为工厂模式... ⚠️",
-            "🧹 清理浏览器历史记录... 🔍",
-            "📝 获取所有备忘录内容... 📑",
-            "🎵 修改手机铃声为搞笑音效... 🎶",
-            "🎸 启动音乐播放器播放摇滚音乐... 🤘",
-            "🔔 转发所有通知到我这... 📲",
-            "📡 扫描手机中的所有二维码... 🤖",
-            "🔑 重置密码为 12345678... 😎",
-            "💥 手机数据崩溃...所有信息已被破坏！ 💀",
-            "🤡 等等，开个玩笑，什么都没发生！ 😂",
-            "💡 你真的相信这段时间发生的所有事情吗？ 🌈",
-            "🌍 你的数据在宇宙中是安全的，不用担心！ 🚀"
-        ];
+<script>
+    async function sendMessage() {
+        const userInput = document.getElementById('user-input').value;
+        if (!userInput) return; // 如果输入为空，则返回
 
-        // 随机打乱消息顺序
-        messages = messages.sort(() => Math.random() - 0.5);
+        // 禁用发送按钮，防止重复发送
+        const sendButton = document.getElementById('send-button');
+        sendButton.disabled = true;
 
-        let index = 0;
-        const totalMessages = messages.length;
-        const progressBar = document.getElementById('progress');
+        // 显示用户消息
+        appendMessage('我: ' + userInput, 'user-message');
+        document.getElementById('user-input').value = ''; // 清空输入框
 
-        // 等待用户输入密码后开始入侵
-        function startHacking() {
-            const passwordInput = document.getElementById('password-input');
-            const errorMessage = document.getElementById('error-message');
+        try {
+            const response = await fetch('https://api.openai-hk.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'hk-8ytim51000045311b5840ea2bdc25f3d6b69dc915423fefb' // 替换为你的 API 密钥
+                },
+                body: JSON.stringify({
+                    model: "gpt-3.5-turbo",
+                    messages: [
+                        { role: "system", content: "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible." },
+                        { role: "user", content: userInput }
+                    ],
+                    max_tokens: 1200,
+                    temperature: 0.8,
+                    top_p: 1,
+                    presence_penalty: 1
+                })
+            });
 
-            // 验证密码
-            if (passwordInput.value.trim() === "") {
-                errorMessage.innerText = "密码不能为空，请输入密码！";
-                return;
-            } else {
-                errorMessage.innerText = ""; // 清除错误信息
+            if (!response.ok) {
+                throw new Error('网络错误，状态码: ' + response.status);
             }
 
-            document.getElementById('password-box').style.display = 'none';
-            document.getElementById('restart-button').style.display = 'block'; // 显示重新开始按钮
-            showNextMessage();
+            const data = await response.json();
+            const assistantReply = data.choices[0].message.content;
+            appendMessage('助手: ' + assistantReply, 'assistant-message');
+        } catch (error) {
+            appendMessage('助手: 请求出错，错误信息: ' + error.message, 'assistant-message');
+        } finally {
+            // 启用发送按钮
+            sendButton.disabled = false;
         }
+    }
 
-        function showNextMessage() {
-            if (index < messages.length) {
-                document.getElementById('message').innerText = messages[index];
-                const progressWidth = ((index + 1) / totalMessages) * 100; // 计算进度条宽度
-                progressBar.style.width = progressWidth + '%'; // 更新进度条
+    function appendMessage(message, messageClass) {
+        const messagesDiv = document.getElementById('messages');
+        messagesDiv.innerHTML += '<div class="' + messageClass + '">' + message + '</div>';
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; // 滚动到最底部
+    }
+</script>
 
-                index++;
-                setTimeout(() => {
-                    showNextMessage();
-                }, 3000); // 每3秒显示一条消息
-            } else {
-                showSummary();
-            }
-        }
-
-        function showSummary() {
-            let summaryMessages = [
-                "🏆 恭喜你完成了一个绝妙的挑战！ 🥳",
-                "🎉 黑客操作完成，您仍然安全无恙！ 😅",
-                "🎊 恭喜您！您的数据依然 intact！ 🤩",
-                "🤡 放心，所有操作只是个笑话！ 😂",
-                "📱 现在可以继续使用您的手机，没事发生！ 👌",
-                "👋 再见，祝您使用愉快！ 😄"
-            ];
-            let randomMessage = summaryMessages[Math.floor(Math.random() * summaryMessages.length)];
-            const timestamp = new Date().toLocaleTimeString(); // 获取当前时间
-            document.getElementById('message').innerText = `${randomMessage} \n操作完成时间: ${timestamp}`;
-            document.getElementById('message').classList.add('summary');
-        }
-
-        function restart() {
-            index = 0;
-            progressBar.style.width = '0%';
-            document.getElementById('password-box').style.display = 'block';
-            document.getElementById('restart-button').style.display = 'none';
-            document.getElementById('message').classList.remove('summary');
-            document.getElementById('message').innerText = '⚡ 正在初始化... 🔧';
-            document.getElementById('password-input').value = '';
-            document.getElementById('error-message').innerText = '';
-        }
-
-        // 页面加载后立即展示密码框
-        window.onload = function() {
-            document.getElementById('password-box').style.display = 'block';
-        };
-    </script>
 </body>
 </html>
