@@ -107,6 +107,13 @@
     const greeting = "欢迎使用聊天助手！请随时输入您的问题，我会尽力为您解答。";
     appendMessage(greeting, 'assistant-message');
     
+    document.getElementById('user-input').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // 防止换行
+            sendMessage(); // 发送消息
+        }
+    });
+    
     async function sendMessage() {
         const userInput = document.getElementById('user-input').value;
         if (!userInput) return; // 如果输入为空，则返回
